@@ -4,6 +4,7 @@ import './App.css';
 import Footer from './Footer';
 import Header from './Header';
 import StudentInfo from './StudentInfo';
+import Invoice from './Invoice';
 
 const students = [
   "Emelloyd Rodriguez",
@@ -37,6 +38,14 @@ const studentsInfo = [
   {firstName:"Nicole", lastName:"Dela Cruz", id:"006", age: 30, gender: "female", course: "CEO",birthdate:"1993-01-01"},
 ];
 
+let invoice = {invoiceTo:"Juan Dela Cruz", date:"2023-04-15", address1: "810 Oroquieta Street Sta Cruz 1000", address2:"Manila, Metro Manila, Philippines", invoiceNumber:"6845",paymentMode:"COD"};
+
+let invoiceItems = [{description: "Mouse", Qty: 3, unitPrice: 200}, 
+                {description: "Keyboard", Qty: 3, unitPrice: 400},
+                {description: "Monitor", Qty: 6, unitPrice: 5400},
+                {description: "CPU Tower Case", Qty: 3, unitPrice: 1200},
+                {description: "Headset", Qty: 3, unitPrice: 500},
+                {description: "UPS", Qty: 1, unitPrice: 4000},];
 
 const studentList = students.map((item) => <li>{item}</li>);
 
@@ -44,6 +53,8 @@ function App() {
   return (
     <div className="App">
       <Header menuList={menus}/>
+
+      <Invoice details={invoice} lines={invoiceItems}/>
 
       <div className="main-content">
         <h1>Hello React</h1>
