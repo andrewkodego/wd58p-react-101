@@ -5,6 +5,7 @@ import Footer from './Footer';
 import Header from './Header';
 import StudentInfo from './StudentInfo';
 import Invoice from './Invoice';
+import TicTacToe from './TicTacToe';
 
 const students = [
   "Emelloyd Rodriguez",
@@ -49,10 +50,59 @@ let invoiceItems = [{description: "Mouse", Qty: 3, unitPrice: 200},
 
 const studentList = students.map((item) => <li>{item}</li>);
 
+const vehicles = ['mustang', 'f-150', 'expedition'];
+//const [car, truck, suv] = vehicles;
+const [car,, suv] = vehicles;
+
+const [inv1,,,,inv5] = invoiceItems;
+
+const numberSet1 = [23,34,56,34,51,8,11,43];
+const numberSet2 = [28,34,56,34,51,8,11,48];
+let combinedNumberSet = [...numberSet1, ...numberSet2];
+
+let [first, second, third, ...remaining] = numberSet1;
+let [line1, line2, ...restOfline ] = invoiceItems;
+
+let locked = 0;
+//if(locked != 1){return true;}else{return false;}
+let canChange = locked != 1 ? 'true' : 'false';
+
+const callHell = () =>{
+  return 'Highway to Hell';
+}
+
+let speed = 230;
+// if(speed >= 120{return 'Too Fast'}elseif(speed >= 80){return 'Fast'}else{return 'OK'})
+let message = speed >= 120 ? (speed >= 200 ? callHell() : 'Too Fast') : speed >= 80 ? 'Fast' : 'OK';
+
+
 function App() {
   return (
     <div className="App">
       <Header menuList={menus}/>
+
+      <TicTacToe/>
+
+      <div>{car}</div>
+      <div>{suv}</div>
+
+      <div>{inv1.description}</div>
+      <div>{inv5.description}</div>
+
+      <div>{combinedNumberSet.join(", ")}</div>
+      <div>{first}</div>
+      <div>{second}</div>
+      <div>{third}</div>
+      <div>{remaining.join(" * ")}</div>
+
+      <div>{line1.description}</div>
+      <div>{line2.description}</div>
+      <div>{restOfline.length}</div>
+
+      <div>{canChange}</div>
+      <div>{locked != 1 ? 'true' : 'false'}</div>
+
+      <div>{message}</div>
 
       <Invoice details={invoice} lines={invoiceItems}/>
 

@@ -39,3 +39,24 @@
   left: 0;
   right: 0;
 }
+
+.tic-box{
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  display: inline-block;
+  border: 1px solid black;
+  text-align: center;
+  line-height: normal;
+  vertical-align: bottom;
+  font-size: 28px;
+}
+
+.withMove{
+  background-color: grey;
+}
+
+.game-status{
+  font-size: 18px;
+  color: brown;
+}
