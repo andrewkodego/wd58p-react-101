@@ -1,12 +1,16 @@
-import { createContext, useContext, useEffect, useRef, useState, forwardRef, useImperativeHandle  } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const PlayerContext = createContext();
 
 const TicTacToe = () =>{
 
+    const roundsToWin = 3;
     const [player, setPlayer] = useState("O");
     const [moves, setMoves] = useState([{}]);
     const [status, setStatus] = useState("");
+    const [reset, setReset] = useState(1);
+    const [playerOScore, setPlayerOScore] = useState(0);
+    const [playerXScore, setPlayerXScore] = useState(0);
 
     const togglePlayer = (ticboxId) =>{
         let boxId = 'box'+ticboxId;
@@ -17,6 +21,12 @@ const TicTacToe = () =>{
     useEffect(()=>{
         checkWinCombination(); 
     },[moves])
+
+    useEffect(()=>{
+        if(reset == 0){
+            setReset(1);
+        }
+    },[reset])
 
     const winCombination = [
         [1,2,3],[4,5,6],[7,8,9], // horizontal combination
@@ -34,38 +44,62 @@ const TicTacToe = () =>{
             let total = combi_1 + combi_2 + combi_3;
             if(total == 3){
                 setStatus("Player O win");
+                setPlayerOScore(playerOScore + 1);
             }else if(total == -3){
                 setStatus("Player X win");
+                setPlayerXScore(playerXScore + 1);
             }
         })
+
+        if(playerOScore == roundsToWin || playerXScore == roundsToWin){
+            doRestartGame();
+            setStatus("Game Over");
+        }
+
+        checkDrawResult();
     }
-    const childRef = useRef();
+
+    const checkDrawResult = ()=> {
+        let totalMoves = 0;
+        for(let i=1; i <= 9; i++){
+            totalMoves += moves['box' + i] == undefined ? 0 : 1;
+        }
+
+        if(totalMoves == 9){
+            setStatus("Game Draw");
+        }
+    }
 
     const doRestartGame = () =>{
         setMoves([{}]);
         setPlayer("O"); 
         setStatus('');
-        console.log(childRef);
-        childRef.current.resetBox();
+        setReset(0);
     }
 
     return (
         <>
-            <PlayerContext.Provider value={{player, togglePlayer, status}}>
+            <h2>Score</h2>
+            <div className="row">
+                <div className="col-sm-2">Player O : {playerOScore}</div>
+                <div className="col-sm-2">Player X : {playerXScore}</div>
+            </div>
+            
+            <PlayerContext.Provider value={{player, togglePlayer, status, reset}}>
             <div>
-                <TicBox boxId={1} ref={childRef}/>
-                <TicBox boxId={2} ref={childRef}/>
-                <TicBox boxId={3} ref={childRef}/>
+                <TicBox boxId={1}/>
+                <TicBox boxId={2}/>
+                <TicBox boxId={3}/>
             </div>
             <div>
-                <TicBox boxId={4} ref={childRef}/>
-                <TicBox boxId={5} ref={childRef}/>
-                <TicBox boxId={6} ref={childRef}/>
+                <TicBox boxId={4}/>
+                <TicBox boxId={5}/>
+                <TicBox boxId={6}/>
             </div>
             <div>
-                <TicBox boxId={7} ref={childRef}/>
-                <TicBox boxId={8} ref={childRef}/>
-                <TicBox boxId={9} ref={childRef}/>
+                <TicBox boxId={7}/>
+                <TicBox boxId={8}/>
+                <TicBox boxId={9}/>
             </div>
             </PlayerContext.Provider>
 
@@ -75,9 +109,9 @@ const TicTacToe = () =>{
     );
 }
 
-const TicBox = forwardRef(({boxId, ref}) => {
+const TicBox = ({boxId}) => {
     
-    const {player, togglePlayer, status} = useContext(PlayerContext);
+    const {player, togglePlayer, status, reset} = useContext(PlayerContext);
     const [playerChar, setPlayerChar] = useState();
     const [withMove, setWithMove] = useState('');
 
@@ -89,16 +123,14 @@ const TicBox = forwardRef(({boxId, ref}) => {
         }
     }
 
-    useImperativeHandle(ref, () => ({
-        resetBox(){
-            setPlayerChar('');
-            setWithMove('');
-        }
-    }));
+    useEffect(()=>{
+        setPlayerChar();
+        setWithMove('');
+    },[reset]);
 
     return (
         <div className={"tic-box " + withMove} onClick={onClickHandler}>{playerChar}</div>
     );
-})
+}
 
 export default TicTacToe;
