@@ -6,6 +6,7 @@ import Header from './Header';
 import StudentInfo from './StudentInfo';
 import Invoice from './Invoice';
 import TicTacToe from './TicTacToe';
+import InvoiceDetails from './InvoiceLines';
 
 const students = [
   "Emelloyd Rodriguez",
@@ -81,6 +82,8 @@ function App() {
     <div className="App">
       <Header menuList={menus}/>
 
+      <Invoice details={invoice} lines={invoiceItems}/>
+
       <TicTacToe/>
 
       <div>{car}</div>
@@ -104,7 +107,7 @@ function App() {
 
       <div>{message}</div>
 
-      <Invoice details={invoice} lines={invoiceItems}/>
+      
 
       <div className="main-content">
         <h1>Hello React</h1>
