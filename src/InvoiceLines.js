@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const InvoiceLines = ({data, index, onRemoveHandler, onAddHandler}) => {
+const InvoiceLines = ({data, index, onRemoveHandler, onAddHandler, onUpdateData}) => {
 
-    const [defaultData, setDefaultData] = useState(data);
+    const [defaultData, setDefaultData] = useState(({...data}));
     const computeAmount = (data)=>{
         let amount = data.Qty * data.unitPrice;
-        if(amount == undefined){
+        if(amount === undefined){
             amount = 0;
         }
         return amount;
@@ -13,9 +13,21 @@ const InvoiceLines = ({data, index, onRemoveHandler, onAddHandler}) => {
 
     const onChangeHandler = (e) =>{
         let fieldName = e.target.name;
-        setDefaultData((defaultData) => ({...defaultData, [fieldName]: e.target.value}));
+        let fieldValue = e.target.value;
+
+        if(e.target.type === 'number'){
+            fieldValue = parseInt(fieldValue);
+        }
+
+        let newData = {...defaultData, [fieldName]: fieldValue};
+        setDefaultData(newData);
+        onUpdateData(index, newData);
     }
 
+    useEffect(()=>{
+        setDefaultData(data);
+    },[data])
+    
     return (
         <>
         <tr>
@@ -25,8 +37,7 @@ const InvoiceLines = ({data, index, onRemoveHandler, onAddHandler}) => {
             </td>
             <td>
                 <input name="description" value={defaultData != null ? defaultData.description : ''}
-                    onChange={onChangeHandler}
-                />
+                    onChange={onChangeHandler}/>
             </td>
             <td className="numeric">
                 <input type="number" name="Qty" value={defaultData != null ? defaultData.Qty : 0}

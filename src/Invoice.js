@@ -1,67 +1,114 @@
 import { useState, useEffect } from "react";
-import DateUtils from "./DateUtils";
 import InvoiceLines from "./InvoiceLines";
 
-function Invoice({details, lines}){
+function Invoice(props){
 
-    const [invoiceLines, setInvoiceLines] = useState(lines);
+    const [invoiceLines, setInvoiceLines] = useState(props.lines);
+    const [invoiceDetails, setInvoiceDetails] = useState(props.details);
+    
+    let newAmount = 0;
+    const doComputeTotalAmount = (initialize = 0) => {
+        newAmount = 0;
+        props.lines.map((item) => { 
+            let amount = item.Qty * item.unitPrice;
+            if(amount === undefined){
+                amount = 0;
+            }
+            newAmount += amount;
+            return newAmount;
+        });
 
-    const {invoiceTo, date, address1, address2, invoiceNumber, paymentMode} = details;
-
-    let totalAmount = 0;
-    lines.map((item)=>{
-        totalAmount += item.Qty* item.unitPrice;
-    });
-
-    const addLineFields = (index) => {
-        //setInvoiceLines((items) => [...items, {description: "", Qty: 0, unitPrice: 0}]);        
-
-        const updatedItems = [...invoiceLines];
-        let startList = updatedItems.slice(0,index+1);
-        let endList = updatedItems.slice(index+1);
-        let newList = [...startList, {description: "", Qty: 0, unitPrice: 0}, ...endList];
-
-        //const newList = [, , ];
-        setInvoiceLines(newList); 
+        if(initialize === 0){
+            setTotalAmount(newAmount);
+        }
     }
 
-    const removeLineFields = (index) =>{   
-        console.log(index);   
+    doComputeTotalAmount(1);
+
+    const [totalAmount, setTotalAmount] = useState(newAmount);
+
+    const addLineFields = (index) => {     
+        const updatedItems = [...invoiceLines];
+        let newList = [];
+        if(index === 0){
+            newList = [{description: "", Qty: 0, unitPrice: 0}, ...updatedItems];
+        }else if(index === updatedItems.length){
+            newList = [...updatedItems, {description: "", Qty: 0, unitPrice: 0}];
+        }else{
+            let startList = updatedItems.slice(0,index+1);
+            let endList = updatedItems.slice(index+1);
+            newList = [...startList, {description: "", Qty: 0, unitPrice: 0}, ...endList];
+        }
+
+        setInvoiceLines([...newList]); 
+    }
+
+    const removeLineFields = (index) =>{     
         const updatedItems = [...invoiceLines];
         updatedItems.splice(index, 1);
-        setInvoiceLines(updatedItems);        
+        setInvoiceLines([...updatedItems]);        
+    }
+
+    const updateLineList = (index, data) => {
+        props.lines = [...invoiceLines];
+        props.lines[index] = data;
+        doComputeTotalAmount();
+        setInvoiceLines([...props.lines]); 
+
+    };
+
+    const onChangeInvoiceDetails = (event) =>{
+        let fieldName = event.target.name;
+        setInvoiceDetails((invoiceDetails) => ({...invoiceDetails, [fieldName]: event.target.value}));
+    }
+
+    const handleSubmit = (event) =>{
+        event.preventDefault();
+        setInvoiceDetails((invoiceDetails) => ({...invoiceDetails, lines: invoiceLines, totalAmount:totalAmount}));
     }
 
     useEffect(()=>{
-        setInvoiceLines(invoiceLines);
-        console.log(invoiceLines);
-    },[invoiceLines])
+        console.log(invoiceDetails);
+    },[invoiceDetails])
+  
 
     return (
         <>
             <div className="card">
                 <div className="card-header bg-success">
-                    <h4>Invoice # {invoiceNumber.padStart(10, "0")}</h4>
+                    <h4>Invoice # {invoiceDetails.invoiceNumber.padStart(10, "0")}</h4>
                 </div>
                 <div className="card-body">
+                <form className="form" onSubmit={handleSubmit}>
                     <div className="row">
                         <div className="col-sm-8">
                             <label className="field-label">Invoice To:</label>
-                            <label>{invoiceTo}</label>
+                            <input name="invoiceTo" value={invoiceDetails.invoiceTo}
+                            onChange={onChangeInvoiceDetails}/>
                         </div>
                         <div className="col-sm-4">
                             <label className="field-label">Date:</label>
-                            <label>{DateUtils(new Date(date), 'dd/mm/yyyy')}</label>
+                            <input type="date" name="date" value={invoiceDetails.date}
+                            onChange={onChangeInvoiceDetails}/>
                         </div>
                     </div>                 
                     <div className="row">
                         <div className="col-sm-8">
                             <label className="field-label">Address: </label>
-                            <label>{address1 +", " + address2} </label>
+                            <div>
+                                <textarea name="address1" cols={50} rows={1} 
+                                onChange={onChangeInvoiceDetails} value={invoiceDetails.address1}/>
+                            </div>
+                            <div>
+                                <textarea name="address2" cols={50} rows={1} 
+                                onChange={onChangeInvoiceDetails} value={invoiceDetails.address2}/>
+                            </div>
+                            
                         </div>                
                         <div className="col-sm-4">
                             <label className="field-label">Payment Mode:</label>
-                            <label>{paymentMode} </label>
+                            <input name="paymentMode" value={invoiceDetails.paymentMode}
+                            onChange={onChangeInvoiceDetails}/>
                         </div> 
                     </div>
 
@@ -81,12 +128,15 @@ function Invoice({details, lines}){
                                 return (
                                     <InvoiceLines data={item} index={index} 
                                         onRemoveHandler={removeLineFields}
-                                        onAddHandler={addLineFields}/>
+                                        onAddHandler={addLineFields}
+                                        onUpdateData={updateLineList}/>
                                     )
                                 })}
                                 <InvoiceLines data={{description: "", Qty: 0, unitPrice: 0}}
+                                    index={invoiceLines.length}
                                     onRemoveHandler={removeLineFields}
-                                    onAddHandler={addLineFields}/>
+                                    onAddHandler={addLineFields}
+                                    onUpdateData={updateLineList}/>
                                 <tr>
                                     <td colSpan={4}>Total</td>
                                     <td className="numeric">{totalAmount.toFixed(2)}</td>
@@ -94,6 +144,8 @@ function Invoice({details, lines}){
                             </tbody>
                         </table>
                     </div>
+                    <input className="btn btn-primary" type="submit"/>
+                </form>
                 </div>
             </div>
         </>

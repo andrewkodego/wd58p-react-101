@@ -4,9 +4,9 @@ import './App.css';
 import Footer from './Footer';
 import Header from './Header';
 import StudentInfo from './StudentInfo';
-import Invoice from './Invoice';
 import TicTacToe from './TicTacToe';
-import InvoiceDetails from './InvoiceLines';
+import StudentList from './StudentList';
+import InvoiceList from './InvoiceList';
 
 const students = [
   "Emelloyd Rodriguez",
@@ -31,16 +31,6 @@ const students = [
 const menus = ["Home","About","Contact Us","Login","Settings"];
 const studentInfo = {firstName:"Juan", lastName:"Dela Cruz", id:"001", age: 24,gender: "male", course: "Manager",birthdate:"1990-01-01"};
 
-const studentsInfo = [
-	{firstName:"Juan", lastName:"Dela Cruz", id:"001", age: 24,gender: "male", course: "Manager",birthdate:"1990-01-01"},
-	{firstName:"Anna", lastName:"Salvador", id:"002", age: 21, gender: "female", course: "Junior Dev",birthdate:"1991-01-01"},
-	{firstName:"Mark", lastName:"Bautista", id:"003", age: 28, gender: "male", course: "Senior Fullstack Dev",birthdate:"1992-01-01"},
-	{firstName:"Micheal", lastName:"Garcia", id:"004", age: 31, gender: "male", course: "CEO",birthdate:"1993-01-01"},
-  {firstName:"Michelle", lastName:"Bautista", id:"005", age: 34, gender: "female", course: "CEO",birthdate:"1993-01-01"},
-  {firstName:"Nicole", lastName:"Dela Cruz", id:"006", age: 30, gender: "female", course: "CEO",birthdate:"1993-01-01"},
-];
-
-let invoice = {invoiceTo:"Juan Dela Cruz", date:"2023-04-15", address1: "810 Oroquieta Street Sta Cruz 1000", address2:"Manila, Metro Manila, Philippines", invoiceNumber:"6845",paymentMode:"COD"};
 
 let invoiceItems = [{description: "Mouse", Qty: 3, unitPrice: 200}, 
                 {description: "Keyboard", Qty: 3, unitPrice: 400},
@@ -82,7 +72,7 @@ function App() {
     <div className="App">
       <Header menuList={menus}/>
 
-      <Invoice details={invoice} lines={invoiceItems}/>
+      <InvoiceList/>
 
       <TicTacToe/>
 
@@ -119,9 +109,7 @@ function App() {
 
         <StudentInfo data={studentInfo}/>
 
-        <div className="row">
-        {studentsInfo.map((studentData) => <StudentInfo data={studentData}/>)}
-        </div>
+        <StudentList/>
         
       </div>
 
