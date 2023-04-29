@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import StudentInfo from "./StudentInfo";
 import ApiService from "./ApiService";
 import StudentInfoEdit from "./StudentInfoEdit";
+import { Modal } from 'react-bootstrap';
 
 function StudentList(){
     
@@ -50,18 +51,21 @@ function StudentList(){
 
     const onDeleteHandler = (formData) =>{
         setStudentDetails(formData);
-        setConfirmStatus('show');
-        console.log(confirmStatus);
+        setConfirmOpen(true);
     }
 
-    const [confirmStatus, setConfirmStatus] = useState("hide");
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     const doConfirmedDeleteHandler = () =>{
-        setConfirmStatus('hide');
+        doCloseConfirmHandler();
         ApiService('/students/' + studentDetails.id, studentDetails, (data)=>{
             console.log(data);
             getStudetList();
         }, "DELETE");
+    }
+
+    const doCloseConfirmHandler = () =>{
+        setConfirmOpen(false);
     }
 
     return (
@@ -94,22 +98,19 @@ function StudentList(){
                 </div>
             </div>
 
-            <div id="confirmWin" className={ confirmStatus + " modal fade"} data-bs-backdrop="static" data-bs-keyboard="false">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="btn-close btn-sm" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div className="modal-body">
-                            <h4>Are you sure you want to DELETE this record</h4>
-                            <div>
-                                <button className="btn btn-primary" data-bs-dismiss="modal">No</button>
-                                <button className="btn btn-primary" onClick={doConfirmedDeleteHandler}>Yes</button>
-                            </div>
-                        </div>
+            <Modal show={confirmOpen}>
+                <Modal.Header>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                    <button type="button" className="btn-close btn-sm" onClick={doCloseConfirmHandler}></button>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4 className="text-center mb-5">Are you sure you want to DELETE this record?</h4>
+                    <div className="text-center">
+                        <button className="btn btn-primary me-3 px-5" onClick={doCloseConfirmHandler}>No</button>
+                        <button className="btn btn-success px-5" onClick={doConfirmedDeleteHandler}>Yes</button>
                     </div>
-                </div>
-            </div>
+                </Modal.Body>
+            </Modal>
 
         </>
     )
