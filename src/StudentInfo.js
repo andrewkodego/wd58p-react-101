@@ -1,6 +1,14 @@
-function StudentInfo({data, title="Student Details"}){
+function StudentInfo({data, onEditHandler, onDeleteHandler}){
 
     const {firstName, lastName, id, age, gender, course, birthdate} = data;
+
+    const onClickEditHandler = () =>{
+        onEditHandler(data);
+    }
+
+    const onClickDeleteHandler =()=>{
+        onDeleteHandler(data);
+    }
 
     return (
     <>
@@ -26,6 +34,12 @@ function StudentInfo({data, title="Student Details"}){
                         <label>Gender: {gender} </label>
                     </div>
                 </div>
+
+                <div className="card-footer">
+                    <button type="button" className="btn btn-danger me-3" onClick={onClickDeleteHandler}>Delete</button>
+                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myPopupWin" onClick={onClickEditHandler}>Edit</button>                    
+                </div>
+                
             </div>
         </div>
     </>

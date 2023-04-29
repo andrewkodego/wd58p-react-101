@@ -50,10 +50,10 @@ function Invoice(props){
     }
 
     const updateLineList = (index, data) => {
-        props.lines = [...invoiceLines];
-        props.lines[index] = data;
+        let lines = [...invoiceLines];
+        lines[index] = data;
         doComputeTotalAmount();
-        setInvoiceLines([...props.lines]); 
+        setInvoiceLines([...lines]); 
 
     };
 
@@ -68,8 +68,9 @@ function Invoice(props){
     }
 
     useEffect(()=>{
-        console.log(invoiceDetails);
-    },[invoiceDetails])
+        setInvoiceDetails(props.details);
+        setInvoiceLines(props.lines);
+    },[props])
   
 
     return (
@@ -149,7 +150,6 @@ function Invoice(props){
                 </div>
             </div>
         </>
-    );
+    );    
 }
-
 export default Invoice;

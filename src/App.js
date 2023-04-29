@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle'
 import Button from 'react-bootstrap/Button';
 import './App.css';
 import Footer from './Footer';
@@ -72,6 +73,16 @@ function App() {
     <div className="App">
       <Header menuList={menus}/>
 
+      <StudentList/>
+
+      <hr/>
+
+      
+      
+
+
+
+
       <InvoiceList/>
 
       <TicTacToe/>
@@ -109,7 +120,7 @@ function App() {
 
         <StudentInfo data={studentInfo}/>
 
-        <StudentList/>
+        
         
       </div>
 
