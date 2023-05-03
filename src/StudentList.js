@@ -23,7 +23,7 @@ function StudentList(){
         getStudetList();
     },[]);
 
-    const [keyword, setKeyword] = useState('');
+    const [keyword, setKeyword] = useState();
     const onKeywordChangeHandler = (e) =>{
         setKeyword(e.target.value);
         ApiService('/students/name/' + e.target.value, null, (data)=>{

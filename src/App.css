@@ -60,3 +60,26 @@
   font-size: 18px;
   color: brown;
 }
+
+.header>nav{
+  margin-top:10px;
+  display: inline-block;
+}
+
+.header>nav ul li a{
+  color: #fff;
+  text-decoration: none;
+}
+
+.app-header-logo{
+  float: left;
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+}
+
+.app-header-logo>img{
+  width: 100%;
+  height: auto;
+}
